@@ -1,6 +1,10 @@
 # Northcoders News API
 
-For instructions, please head over to [L2C NC News](https://l2c.northcoders.com/courses/be/nc-news).
+After cloning the repository, create the following two environment files in the root directory in order to successfully connect to the two databases locally:
+.env.development
+.env.test
+
+Use .env-example as a template
 
 
 
