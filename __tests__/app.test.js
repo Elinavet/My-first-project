@@ -58,3 +58,39 @@ describe('GET /api', () => {
           });
   });
 });
+
+describe('GET /api/articles/:article_id', () => {
+    test('responds with 200 and the correct article object for a valid article_id', () => {
+        return request(app)
+            .get('/api/articles/1')
+            .expect(200)
+            .then(({ body }) => {
+                expect(body.article).toHaveProperty('article_id', 1);
+                expect(body.article).toHaveProperty('author');
+                expect(body.article).toHaveProperty('title');
+                expect(body.article).toHaveProperty('body');
+                expect(body.article).toHaveProperty('topic');
+                expect(body.article).toHaveProperty('created_at');
+                expect(body.article).toHaveProperty('votes');
+                expect(body.article).toHaveProperty('article_img_url');
+            });
+    });
+
+    test('responds with 404 for a non-existent article_id', () => {
+        return request(app)
+            .get('/api/articles/9999')
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).toBe('Article not found');
+            });
+    });
+
+    test('responds with 400 for an invalid article_id', () => {
+        return request(app)
+            .get('/api/articles/invalidID')
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toBe('Invalid article ID');
+            });
+    });
+});
