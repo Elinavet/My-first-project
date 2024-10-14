@@ -35,3 +35,26 @@ describe('GET /api/topics', () => {
           });
   });
 });
+
+describe('GET /api', () => {
+  test('responds with a JSON object detailing all available endpoints', () => {
+      return request(app)
+          .get('/api')
+          .expect(200)
+          .then(({ body }) => {
+              expect(body).toEqual(expect.any(Object));
+              expect(body['GET /api']).toEqual({
+                  description: 'serves up a json representation of all the available endpoints of the api'
+              });
+              expect(body['GET /api/topics']).toEqual({
+                  description: 'serves an array of all topics',
+                  queries: [],
+                  exampleResponse: {
+                      topics: [
+                          { slug: 'football', description: 'Footie!' }
+                      ]
+                  }
+              });
+          });
+  });
+});
