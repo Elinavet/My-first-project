@@ -3,6 +3,7 @@ const app = require('../app')
 const db = require('../db/connection')
 const seed = require('../db/seeds/seed')
 const testData = require('../db/data/development-data/index')
+require('jest-sorted'); 
 
 
 beforeEach(()=> seed(testData))
@@ -91,6 +92,33 @@ describe('GET /api/articles/:article_id', () => {
             .expect(400)
             .then(({ body }) => {
                 expect(body.msg).toBe('Invalid article ID');
+            });
+    });
+});
+
+describe('GET /api/articles', () => {
+    test('responds with status 200 and an array of articles sorted by date', () => {
+        return request(app)
+            .get('/api/articles')
+            .expect(200)
+            .then(({ body }) => {
+                const { articles } = body;
+                expect(articles).toBeInstanceOf(Array);
+                expect(articles.length).toBeGreaterThan(0);
+
+                articles.forEach((article) => {
+                    expect(article).toHaveProperty('author');
+                    expect(article).toHaveProperty('title');
+                    expect(article).toHaveProperty('article_id');
+                    expect(article).toHaveProperty('topic');
+                    expect(article).toHaveProperty('created_at');
+                    expect(article).toHaveProperty('votes');
+                    expect(article).toHaveProperty('article_img_url');
+                    expect(article).toHaveProperty('comment_count');
+                    expect(article).not.toHaveProperty('body');  
+                });
+
+                expect(articles).toBeSortedBy('created_at', { descending: true });
             });
     });
 });
