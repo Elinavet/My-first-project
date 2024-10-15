@@ -91,7 +91,7 @@ describe('GET /api/articles/:article_id', () => {
             .get('/api/articles/invalidID')
             .expect(400)
             .then(({ body }) => {
-                expect(body.msg).toBe('Invalid article ID');
+                expect(body.msg).toBe('Invalid ID');
             });
     });
 });
@@ -164,7 +164,7 @@ describe('GET /api/articles/:article_id/comments', () => {
             .get('/api/articles/invalidID/comments')
             .expect(400)
             .then(({ body }) => {
-                expect(body.msg).toBe('Invalid article ID');
+                expect(body.msg).toBe('Invalid ID');
             });
     });
     test('should respond with comments in descending order by created_at', () => {
@@ -268,6 +268,32 @@ describe('PATCH /api/articles/:article_id', () => {
             .expect(400)
             .then(({ body }) => {
                 expect(body.msg).toBe('Invalid request body');
+            });
+    });
+});
+
+describe('DELETE /api/comments/:comment_id', () => {
+    test('should delete the comment and respond with 204', () => {
+        return request(app)
+            .delete('/api/comments/1') 
+            .expect(204);
+    });
+
+    test('should respond with 404 if the comment_id does not exist', () => {
+        return request(app)
+            .delete('/api/comments/9999') 
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).toBe('Comment not found');
+            });
+    });
+
+    test('should respond with 400 for an invalid comment_id', () => {
+        return request(app)
+            .delete('/api/comments/invalid') 
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toBe('Invalid ID');
             });
     });
 });

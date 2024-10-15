@@ -1,7 +1,7 @@
 const express = require('express');
 const { getAllTopics } = require('./controllers/topics.controller');
 const { getArticleById, getAllArticles, patchArticleById } = require('./controllers/articles.controller');
-const { getCommentsByArticleId,postCommentToArticle } = require('./controllers/comments.controller');
+const { getCommentsByArticleId,postCommentToArticle, deleteCommentById } = require('./controllers/comments.controller');
 const endpoints = require('./endpoints.json');
 
 const app = express();
@@ -20,6 +20,8 @@ app.get('/api/articles/:article_id/comments', getCommentsByArticleId);
 app.post('/api/articles/:article_id/comments', postCommentToArticle);
 
 app.patch('/api/articles/:article_id', patchArticleById);
+
+app.delete('/api/comments/:comment_id', deleteCommentById);
 
 
 app.use((req, res, next) => {
@@ -40,7 +42,7 @@ app.use((err, req, res, next) => {
 app.use((err, req, res, next) => {
     
     if (err.code === '22P02') {
-        return res.status(400).send({ msg: 'Invalid article ID' });
+        return res.status(400).send({ msg: 'Invalid ID' });
     }
     next(err); 
 });

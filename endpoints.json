@@ -89,5 +89,11 @@
         "votes": 101
       }
     }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "deletes a comment by its comment_id",
+    "exampleResponse": {
+      "status": 204
+    }
   }
 }
