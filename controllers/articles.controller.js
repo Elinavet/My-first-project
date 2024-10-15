@@ -4,7 +4,7 @@ exports.getArticleById = (req, res, next) => {
     const { article_id } = req.params;
 
     if (isNaN(article_id)) {
-        const err = new Error('Invalid article ID');
+        const err = new Error('Invalid ID');
         err.status = 400; 
         return next(err);
     }
