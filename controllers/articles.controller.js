@@ -1,4 +1,4 @@
-const { fetchArticleById, fetchArticles } = require('../models/articles.model');
+const { fetchArticleById, fetchArticles, updateArticleVotes } = require('../models/articles.model');
 
 exports.getArticleById = (req, res, next) => {
     const { article_id } = req.params;
@@ -30,3 +30,18 @@ exports.getAllArticles = (req, res, next) => {
       })
       .catch(next); 
   };
+
+exports.patchArticleById = (req, res, next) => {
+    const { article_id } = req.params;
+    const { inc_votes } = req.body;
+
+    if (!inc_votes || typeof inc_votes !== 'number') {
+        return res.status(400).send({ msg: 'Invalid request body' });
+    }
+
+    updateArticleVotes(article_id, inc_votes)
+        .then((updatedArticle) => {
+            res.status(200).send({ article: updatedArticle });
+        })
+        .catch(next);
+};
