@@ -131,12 +131,12 @@ describe('GET /api/articles/:article_id/comments', () => {
             .then(({ body }) => {
                 expect(body.comments).toBeInstanceOf(Array);
                 body.comments.forEach((comment) => {
-                    expect(comment).toHaveProperty('comment_id');
-                    expect(comment).toHaveProperty('votes');
-                    expect(comment).toHaveProperty('created_at');
-                    expect(comment).toHaveProperty('author');
-                    expect(comment).toHaveProperty('body');
-                    expect(comment).toHaveProperty('article_id'); 
+                    expect(comment).toHaveProperty('comment_id', expect.any(Number));
+                    expect(comment).toHaveProperty('votes', expect.any(Number));
+                    expect(comment).toHaveProperty('created_at', expect.any(String));
+                    expect(comment).toHaveProperty('author', expect.any(String));
+                    expect(comment).toHaveProperty('body', expect.any(String));
+                    expect(comment).toHaveProperty('article_id', 1); 
                 });
             });
     });
@@ -165,6 +165,52 @@ describe('GET /api/articles/:article_id/comments', () => {
             .expect(400)
             .then(({ body }) => {
                 expect(body.msg).toBe('Invalid article ID');
+            });
+    });
+    test('should respond with comments in descending order by created_at', () => {
+        return request(app)
+            .get('/api/articles/1/comments') 
+            .then((response) => {
+                expect(response.status).toBe(200);
+                const comments = response.body.comments;
+
+                const sortedComments = [...comments].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                expect(comments).toEqual(sortedComments);
+            });
+    });
+});
+
+describe('POST /api/articles/:article_id/comments', () => {
+    test('should add a comment for a valid article_id', () => {
+        return request(app)
+            .post('/api/articles/1/comments')
+            .send({ username: 'weegembump', body: 'This is a comment.' })
+            .then((response) => {
+                expect(response.status).toBe(201);
+                expect(response.body.comment).toHaveProperty('comment_id');
+                expect(response.body.comment.author).toBe('weegembump');
+                expect(response.body.comment.body).toBe('This is a comment.');
+                expect(response.body.comment.article_id).toBe(1);
+            });
+    });
+
+    test('should respond with 404 for a non-existent article_id', () => {
+        return request(app)
+            .post('/api/articles/9999/comments') 
+            .send({ username: 'weegembump', body: 'This is a comment.' })
+            .expect(404)
+            .then((response) => {
+                expect(response.body.msg).toBe('Article not found');
+            });
+    });
+
+    test('should respond with 400 for missing fields', () => {
+        return request(app)
+            .post('/api/articles/1/comments')
+            .send({ body: 'This is a comment.' }) 
+            .then((response) => {
+                expect(response.status).toBe(400);
+                expect(response.body.msg).toBe("Please provide both username and body in your request.");
             });
     });
 });
