@@ -169,13 +169,11 @@ describe('GET /api/articles/:article_id/comments', () => {
     });
     test('should respond with comments in descending order by created_at', () => {
         return request(app)
-            .get('/api/articles/1/comments') 
+            .get('/api/articles/1/comments')
             .then((response) => {
                 expect(response.status).toBe(200);
                 const comments = response.body.comments;
-
-                const sortedComments = [...comments].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-                expect(comments).toEqual(sortedComments);
+                expect(comments).toBeSortedBy('created_at', { descending: true });
             });
     });
 });
@@ -370,6 +368,38 @@ describe('GET /api/articles (with sorting queries)', () => {
             .expect(400)
             .then(({ body }) => {
                 expect(body.msg).toBe('Invalid sort query');
+            });
+    });
+});
+
+describe('GET /api/articles (topic query)', () => {
+    test('should filter articles by the specified topic', () => {
+        return request(app)
+            .get('/api/articles?topic=cooking')
+            .expect(200)
+            .then(({ body }) => {
+                expect(body.articles).toHaveLength(12); 
+                body.articles.forEach((article) => {
+                    expect(article.topic).toBe('cooking');
+                });
+            });
+    });
+
+    test('should return 404 if topic does not exist', () => {
+        return request(app)
+            .get('/api/articles?topic=nonexistent')
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).toBe('Topic not found');
+            });
+    });
+
+    test('should return all articles if topic query is not provided', () => {
+        return request(app)
+            .get('/api/articles')
+            .expect(200)
+            .then(({ body }) => {
+                expect(body.articles.length).toBeGreaterThan(0);
             });
     });
 });
