@@ -95,5 +95,17 @@
     "exampleResponse": {
       "status": 204
     }
+  },
+  "GET /api/users": {
+    "description": "serves an array of all users",
+    "exampleResponse": {
+      "users": [
+        {
+          "username": "sunset567",
+          "name": "Jo Row",
+          "avatar_url": "https://smth.com/avatar.jpg"
+        }
+      ]
+    }
   }
 }
