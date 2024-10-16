@@ -297,3 +297,32 @@ describe('DELETE /api/comments/:comment_id', () => {
             });
     });
 });
+
+describe('GET /api/users', () => {
+    test('should respond with an array of users', () => {
+        return request(app)
+            .get('/api/users')
+            .expect(200)
+            .then(({ body }) => {
+                expect(body.users).toBeInstanceOf(Array);
+                expect(body.users.length).toBeGreaterThan(0);
+                body.users.forEach((user) => {
+                    expect(user).toEqual(
+                        expect.objectContaining({
+                            username: expect.any(String),
+                            name: expect.any(String),
+                            avatar_url: expect.any(String)
+                        })
+                    );
+                });
+            });
+    });
+    test('responds with a 404 for an invalid path', () => {
+        return request(app)
+            .get('/api/nonexistent')
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).toBe('Path not found');
+            });
+    });
+});
