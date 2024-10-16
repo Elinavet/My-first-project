@@ -326,3 +326,50 @@ describe('GET /api/users', () => {
             });
     });
 });
+
+describe('GET /api/articles (with sorting queries)', () => {
+    test('should sort articles by default sort_by created_at and order desc', () => {
+        return request(app)
+            .get('/api/articles')
+            .expect(200)
+            .then(({ body }) => {
+                expect(body.articles).toBeSortedBy('created_at', { descending: true });
+            });
+    });
+
+    test('should allow sorting articles by any valid column in descending order by default', () => {
+        return request(app)
+            .get('/api/articles?sort_by=title')
+            .expect(200)
+            .then(({ body }) => {
+                expect(body.articles).toBeSortedBy('title', { descending: true });
+            });
+    });
+
+    test('should allow sorting articles by any valid column in ascending order', () => {
+        return request(app)
+            .get('/api/articles?sort_by=author&order=asc')
+            .expect(200)
+            .then(({ body }) => {
+                expect(body.articles).toBeSortedBy('author', { ascending: true });
+            });
+    });
+
+    test('should return 400 for invalid sort_by column', () => {
+        return request(app)
+            .get('/api/articles?sort_by=invalid_column')
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toBe('Invalid sort query');
+            });
+    });
+
+    test('should return 400 for invalid order value', () => {
+        return request(app)
+            .get('/api/articles?sort_by=author&order=invalid_order')
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toBe('Invalid sort query');
+            });
+    });
+});
