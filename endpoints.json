@@ -27,7 +27,7 @@
     }
   },
   "GET /api/articles/:article_id": {
-    "description": "serves an article object by its id",
+    "description": "serves an article object by its id, including a comment_count field for the total number of comments on that article",
     "exampleResponse": {
       "article": {
         "author": "jessjelly",
@@ -37,7 +37,8 @@
         "topic": "coding",
         "created_at": "2020-07-09T20:11:00.000Z",
         "votes": 100,
-        "article_img_url": "https://articles.com/article-image.jpg"
+        "article_img_url": "https://articles.com/article-image.jpg",
+        "comment_count": "5"
       }
     }
   },
