@@ -108,5 +108,18 @@
         }
       ]
     }
+  },
+  "GET /api/users/:username": {
+    "description": "Returns a user object for the specified username. The object contains `username`, `avatar_url`, and `name`."
+  },
+  "exampleResponse": {
+    "status": 200,
+    "body": {
+      "user": {
+        "username": "butter_bridge",
+        "avatar_url": "https://avatar-url.com/butter_bridge",
+        "name": "Jonny"
+      }
+    }
   }
 }

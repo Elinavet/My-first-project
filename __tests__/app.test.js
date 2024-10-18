@@ -405,3 +405,36 @@ describe('GET /api/articles (topic query)', () => {
             });
     });
 });
+
+describe('GET /api/users/:username', () => {
+    test('200: responds with a user object with username, avatar_url, and name properties', () => {
+        return request(app)
+            .get('/api/users/grumpy19') 
+            .expect(200)
+            .then(({ body }) => {
+                expect(body.user).toEqual({
+                    username: "grumpy19",
+                    avatar_url: expect.any(String),
+                    name: expect.any(String),
+                });
+            });
+    });
+
+    test('404: responds with "User not found" for a non-existent username', () => {
+        return request(app)
+            .get('/api/users/non_existent_user')
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).toBe('User not found');
+            });
+    });
+
+    test('400: responds with "Invalid username" for an invalid username', () => {
+        return request(app)
+            .get('/api/users/invalid!user')
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toBe('Invalid username');
+            });
+    });
+});
