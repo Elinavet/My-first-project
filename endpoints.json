@@ -121,5 +121,21 @@
         "name": "Jonny"
       }
     }
-  }
+  },
+  "PATCH /api/comments/:comment_id": {
+    "description": "Updates the votes on a comment given its comment_id.",
+    "request body": {
+        "inc_votes": "An integer that indicates the increment or decrement of the votes."
+    },
+    "exampleResponse": {
+        "comment": {
+            "comment_id": "The ID of the comment.",
+            "votes": "The updated number of votes.",
+            "body": "The content of the comment.",
+            "author": "The username of the comment's author.",
+            "article_id": "The ID of the article the comment is associated with.",
+            "created_at": "The timestamp of when the comment was created."
+        }
+    }
+}
 }

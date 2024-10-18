@@ -438,3 +438,50 @@ describe('GET /api/users/:username', () => {
             });
     });
 });
+
+describe('PATCH /api/comments/:comment_id', () => {
+    test('200: should update the comment votes and respond with the updated comment', () => {
+        return request(app)
+            .patch('/api/comments/1')
+            .send({ inc_votes: 1 })
+            .expect(200)
+            .then(({ body }) => {
+                expect(body.comment).toEqual(
+                    expect.objectContaining({
+                        comment_id: 1,
+                        votes: expect.any(Number),
+                    })
+                );
+            });
+    });
+
+    test('400: should return "Invalid input for votes" when inc_votes is not a number', () => {
+        return request(app)
+            .patch('/api/comments/1')
+            .send({ inc_votes: 'invalid' })
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toBe('Invalid input for votes');
+            });
+    });
+
+    test('404: should return "Comment not found" for non-existent comment_id', () => {
+        return request(app)
+            .patch('/api/comments/9999')
+            .send({ inc_votes: 1 })
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).toBe('Comment not found');
+            });
+    });
+
+    test('400: should return "Invalid ID" for an invalid comment_id', () => {
+        return request(app)
+            .patch('/api/comments/invalidID')
+            .send({ inc_votes: 1 })
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toBe('Invalid ID');
+            });
+    });
+});
