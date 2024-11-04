@@ -4,9 +4,11 @@ const articlesRouter = require('./routers/articles.router');
 const commentsRouter = require('./routers/comments.router');
 const usersRouter = require('./routers/users.router');
 const endpoints = require('./endpoints.json');
+const cors = require('cors');
 
 const app = express();
 app.use(express.json())
+app.use(cors());
 
 app.get('/api', (req, res) => {
     res.status(200).send(endpoints);
